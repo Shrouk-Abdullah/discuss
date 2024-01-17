@@ -17,9 +17,14 @@ defmodule DiscussWeb.Router do
   scope "/", DiscussWeb do
     pipe_through :browser
 
-    get "/", TopicController, :showTopics
-    get "/topics/new", TopicController, :new
-    post "/topic", TopicController, :create
+    # get "/", TopicController, :showTopics
+    # get "/topics/new", TopicController, :new
+    # post "/topic", TopicController, :create
+    # get "/topic/:id/edit", TopicController, :edit
+    # put "/topic/:id", TopicController, :update
+    # delete "/topic/:id", TopicController, :delete
+    # => alternate to above (generate restful routes)
+    resources "/topics", TopicController
   end
 
   # Other scopes may use custom stacks.

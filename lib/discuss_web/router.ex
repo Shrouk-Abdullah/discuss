@@ -1,4 +1,5 @@
 defmodule DiscussWeb.Router do
+  alias Hex.API.Auth
   use DiscussWeb, :router
 
   pipeline :browser do
@@ -25,6 +26,15 @@ defmodule DiscussWeb.Router do
     # delete "/topic/:id", TopicController, :delete
     # => alternate to above (generate restful routes)
     resources "/topics", TopicController
+  end
+
+  # http://localhost:4000/auth
+  scope "/auth", DiscussWeb do
+    # before any request do preprocessing in request
+    pipe_through :browser
+    # (request) it's defines authomaticly, (provider) which is oath facebook or github etc
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
   end
 
   # Other scopes may use custom stacks.

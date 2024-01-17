@@ -1,4 +1,5 @@
 defmodule DiscussWeb.Models.User do
+  alias DiscussWeb.Models.Topic
   use DiscussWeb, :model
 
   schema "users" do
@@ -6,6 +7,8 @@ defmodule DiscussWeb.Models.User do
     field :email, :string
     field :provider, :string
     field :token, :string
+    #  user can add many topic
+    has_many :topics, Topic
     timestamps()
   end
 

@@ -1,5 +1,4 @@
 defmodule DiscussWeb.Router do
-  alias Hex.API.Auth
   use DiscussWeb, :router
 
   pipeline :browser do
@@ -9,6 +8,7 @@ defmodule DiscussWeb.Router do
     plug :put_root_layout, html: {DiscussWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug DiscussWeb.Plugs.SetUser
   end
 
   pipeline :api do
@@ -25,7 +25,7 @@ defmodule DiscussWeb.Router do
     # put "/topic/:id", TopicController, :update
     # delete "/topic/:id", TopicController, :delete
     # => alternate to above (generate restful routes)
-    resources "/topics", TopicController
+    resources "/", TopicController
   end
 
   # http://localhost:4000/auth
@@ -33,6 +33,7 @@ defmodule DiscussWeb.Router do
     # before any request do preprocessing in request
     pipe_through :browser
     # (request) it's defines authomaticly, (provider) which is oath facebook or github etc
+    get "/signout", AuthController, :signout
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
   end

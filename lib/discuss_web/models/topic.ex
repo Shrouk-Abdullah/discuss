@@ -1,9 +1,12 @@
 defmodule DiscussWeb.Models.Topic do
+  alias DiscussWeb.Models.User
   use DiscussWeb, :model
 
   schema "topics" do
     # single column in postgress called title
     field :title, :string
+    # topic only has one created user
+    belongs_to :user, User
   end
 
   def changeset(struct, params \\ %{}) do

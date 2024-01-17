@@ -8,7 +8,7 @@ defmodule DiscussWeb.AuthController do
 
   # callback for uberauth
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, params) do
-    # IO.inspect(auth)
+    # IO.inspect(auth)ء
 
     user_params = %{
       token: auth.credentials.token,
@@ -21,6 +21,12 @@ defmodule DiscussWeb.AuthController do
     IO.inspect(changeset)
     # insert_or_update_user(changeset)
     signin(conn, changeset)
+  end
+
+  def signout(conn, _params) do
+    conn
+    |> configure_session(drop: true)
+    |> redirect(to: topic_path(conn, :index))
   end
 
   defp signin(conn, changeset) do

@@ -1,7 +1,6 @@
 defmodule DiscussWeb.TopicHTML do
   use DiscussWeb, :html
-  use Phoenix.HTML
-  import DiscussWeb.Router.Helpers
+
   # import Phoenix.HTML.Form
   # use Phoenix.Router
 

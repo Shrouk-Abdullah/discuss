@@ -3,9 +3,14 @@ defmodule DiscussWeb.TopicController do
   alias Discuss.Repo
   alias DiscussWeb.Models.Topic
   import DiscussWeb.Router.Helpers
+  import Ecto
+
+  plug DiscussWeb.Plugs.RequireAuth when action in [:new, :create, :edit, :update, :delete]
+  plug :check_topic_owner when action in [:edit, :update, :delete]
 
   def index(conn, _params) do
     # Discuss.Repo.all(DiscussWeb.Models.Topic)
+    IO.inspect(conn.assigns)
     topics = Repo.all(Topic)
     render(conn, :index, topics: topics)
   end
@@ -19,7 +24,14 @@ defmodule DiscussWeb.TopicController do
   def create(conn, %{"topic" => topic}) do
     # %{"topic" => topic} = params
     # for creatin from scratch we sent Topic{} empty
-    changeset = Topic.changeset(%Topic{}, topic)
+    # conn,assign[:user]
+    # changeset = Topic.changeset(%Topic{}, topic)
+
+    changeset =
+      conn.assigns.user
+      |> build_assoc(:topics)
+      |> Topic.changeset(topic)
+
     # Repo responsiple for insrting data in postgress
     case(Repo.insert(changeset)) do
       {:ok, _post} ->
@@ -36,7 +48,9 @@ defmodule DiscussWeb.TopicController do
     end
   end
 
+  # to get user_with_topics = Discuss.Repo.get(DiscussWeb.Models.User, 1) |> Discuss.Repo.preload(:topics)
   # get "/topic/:id/edit", TopicController, :edit => id for id in route
+
   def edit(conn, %{"id" => topic_id}) do
     # actual record in database
     topic = Repo.get(Topic, topic_id)
@@ -71,5 +85,18 @@ defmodule DiscussWeb.TopicController do
     conn
     |> put_flash(:info, "Topic Deleted")
     |> redirect(to: topic_path(conn, :index))
+  end
+
+  def check_topic_owner(conn, _params) do
+    %{params: %{"id" => topic_id}} = conn
+    # fetch topic in database that user try to access
+    if(Repo.get(Topic, topic_id).user_id == conn.assigns.user.id) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You can't edit that")
+      |> redirect(to: topic_path(conn, :index))
+      |> halt()
+    end
   end
 end

@@ -1,4 +1,5 @@
 defmodule DiscussWeb.Models.User do
+  alias DiscussWeb.Models.Comment
   alias DiscussWeb.Models.Topic
   use DiscussWeb, :model
 
@@ -9,6 +10,8 @@ defmodule DiscussWeb.Models.User do
     field :token, :string
     #  user can add many topic
     has_many :topics, Topic
+    # user can add many comment
+    has_many :comments, Comment
     timestamps()
   end
 

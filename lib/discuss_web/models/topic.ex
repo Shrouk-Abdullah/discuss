@@ -1,4 +1,5 @@
 defmodule DiscussWeb.Models.Topic do
+  alias DiscussWeb.Models.Comment
   alias DiscussWeb.Models.User
   use DiscussWeb, :model
 
@@ -7,6 +8,8 @@ defmodule DiscussWeb.Models.Topic do
     field :title, :string
     # topic only has one created user
     belongs_to :user, User
+    # topic has many comment
+    has_many :comment, Comment
   end
 
   def changeset(struct, params \\ %{}) do
